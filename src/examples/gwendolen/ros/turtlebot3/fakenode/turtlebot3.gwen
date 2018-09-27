@@ -1,0 +1,16 @@
+GWENDOLEN
+
+:name: turtlebot3
+
+:Initial Beliefs:
+
+
+:Reasoning Rules:
+
+:Initial Goals:
+
+test [perform]
+
+:Plans:
+
++!test [perform] : {True} <- move(2.0,0.0,0.0,0.0,0.0,0.0), keepmoving(2000,2.0,0.0,0.0,0.0,0.0,0.0);
