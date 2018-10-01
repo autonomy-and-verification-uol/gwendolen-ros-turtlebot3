@@ -14,8 +14,7 @@ Fake node is a simple representation of a turtlebot3 in rviz, where the Gwendole
 
 To run the fake node simulation:
 1. Copy the launch file `launch/turtlebot3_fake_with_rosbridge.launch` to `~/catkin_ws/src/turtlebot3_simulations/turtlebot3_fake/launch`
-2. Go to `~/catkin_ws` and run `catkin_make`
-   * Make sure you either `source ~/catkin_ws/devel/setup.bash` everytime you wish to launch turtlebot on a new terminal, or add it to your `~/.bashrc`
+2. Make sure you either `source ~/catkin_ws/devel/setup.bash` everytime you wish to launch turtlebot on a new terminal, or add it to your `~/.bashrc`
 3.  Copy the `src` folder to MCAPL root
 4. Launch the fake node in ros `roslaunch turtlebot3_fake turtlebot3_fake_with_rosbridge.launch`
 5. In Eclipse, go to `src/examples/gwendolen/ros/turtlebot3/fakenode`, right-click turtlebot3.ail, select run as > run configurations, type run-AIL in the search box (should be there if MCAPL was installed correctly), and click on run
@@ -26,10 +25,9 @@ Empty world is an empty Gazebo world with a turtlebot3.
 
 To run the empty world simulation:
 1. Copy the launch file `turtlebot3_empty_world_with_rosbridge.launch` to `~/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/launch`
-2. Go to `~/catkin_ws` and run `catkin_make`
-   * Make sure you either `source ~/catkin_ws/devel/setup.bash` everytime you wish to launch turtlebot on a new terminal, or add it to your `~/.bashrc`
+2. Make sure you either `source ~/catkin_ws/devel/setup.bash` everytime you wish to launch turtlebot on a new terminal, or add it to your `~/.bashrc`
 3.  Copy the `src` folder to MCAPL root
-4. Launch the fake node in ros `roslaunch turtlebot3_fake turtlebot3_fake_with_rosbridge.launch`
+4. Launch the empty world in ros `roslaunch turtlebot3_gazebo turtlebot3_fake_with_rosbridge.launch`
 5. In Eclipse, go to `src/examples/gwendolen/ros/turtlebot3/emptyworld`, right-click turtlebot3.ail, select run as > run configurations, type run-AIL in the search box (should be there if MCAPL was installed correctly), and click on run
    * The robot should start slowly moving forward, stopping, and repeating the movement in the `gazebo` window
 
@@ -37,7 +35,12 @@ To run the empty world simulation:
 Turtlebot world is Gazebo world with the turtlebot logo as obstacles and a turtlebot3.
 
 To run the turtlebot world simulation:
-1. ...
+1. Copy the launch file `turtlebot3_world_with_rosbridge.launch` to `~/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/launch`
+2. Make sure you either `source ~/catkin_ws/devel/setup.bash` everytime you wish to launch turtlebot on a new terminal, or add it to your `~/.bashrc`
+3.  Copy the `src` folder to MCAPL root
+4. Launch the turtlebot world in ros `roslaunch turtlebot3_gazebo turtlebot3_world_with_rosbridge.launch`
+5. In Eclipse, go to `src/examples/gwendolen/ros/turtlebot3/turtlebotworld`, right-click turtlebot3.ail, select run as > run configurations, type run-AIL in the search box (should be there if MCAPL was installed correctly), and click on run
+   * ...
 
 ## Turtlebot house
 Turtlebot house is Gazebo world with a house and a turtlebot3.
