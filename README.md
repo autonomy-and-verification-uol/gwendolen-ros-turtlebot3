@@ -24,25 +24,26 @@ To run the fake node simulation:
 Empty world is an empty Gazebo world with a turtlebot3.
 
 To run the empty world simulation:
-1. Copy the launch file `turtlebot3_empty_world_with_rosbridge.launch` to `~/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/launch`
+1. Copy the launch file `launch/turtlebot3_empty_world_with_rosbridge.launch` to `~/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/launch`
 2. Make sure you either `source ~/catkin_ws/devel/setup.bash` everytime you wish to launch turtlebot on a new terminal, or add it to your `~/.bashrc`
 3.  Copy the `src` folder to MCAPL root
 4. Launch the empty world in ros `roslaunch turtlebot3_gazebo turtlebot3_fake_with_rosbridge.launch`
 5. In Eclipse, go to `src/examples/gwendolen/ros/turtlebot3/emptyworld`, right-click turtlebot3.ail, select run as > run configurations, type run-AIL in the search box (should be there if MCAPL was installed correctly), and click on run
    * The robot should start slowly moving forward, stopping, and repeating the movement in the `gazebo` window
 
-## Turtlebot world
+## Turtlebot world (with move_base for moving with coordinates)
 Turtlebot world is Gazebo world with the turtlebot logo as obstacles and a turtlebot3.
 
 To run the turtlebot world simulation:
-1. Copy the launch file `turtlebot3_world_with_rosbridge.launch` to `~/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/launch`
+1. Copy the launch file `launch/turtlebot3_world_with_rosbridge.launch` to `~/catkin_ws/src/turtlebot3_simulations/turtlebot3_gazebo/launch`
 2. Make sure you either `source ~/catkin_ws/devel/setup.bash` everytime you wish to launch turtlebot on a new terminal, or add it to your `~/.bashrc`
-3.  Copy the `src` folder to MCAPL root
-4. Launch the turtlebot world in ros `roslaunch turtlebot3_gazebo turtlebot3_world_with_rosbridge.launch`
-5. In Eclipse, go to `src/examples/gwendolen/ros/turtlebot3/turtlebotworld`, right-click turtlebot3.ail, select run as > run configurations, type run-AIL in the search box (should be there if MCAPL was installed correctly), and click on run
+3. Copy the map file `maps/map.yaml` to `~/catkin_ws/src/turtlebot3/turtlebot3_navigation/maps`
+4.  Copy the `src` folder to MCAPL root
+5. Launch the turtlebot world in ros `roslaunch turtlebot3_gazebo turtlebot3_world_with_rosbridge.launch`
+6. In Eclipse, go to `src/examples/gwendolen/ros/turtlebot3/turtlebotworld`, right-click turtlebot3.ail, select run as > run configurations, type run-AIL in the search box (should be there if MCAPL was installed correctly), and click on run
    * ...
 
-## Turtlebot house
+## Turtlebot house (with move_base for moving with coordinates)
 Turtlebot house is Gazebo world with a house and a turtlebot3.
 
 To run the turtlebot house:
