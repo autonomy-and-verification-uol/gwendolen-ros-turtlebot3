@@ -13,4 +13,4 @@ test [perform]
 
 :Plans:
 
-+!test [perform] : {True} <- move(0.05,0.0,0.0,0.0,0.0,0.0), wait(2000), move(0.0,0.0,0.0,0.0,0.0,0.0), wait(2000), +!test [perform];
++!test [perform] : {True} <- move(0.05,0.0,0.0,0.0,0.0,0.0), wait(2000), stop_moving, wait(2000), +!test [perform];

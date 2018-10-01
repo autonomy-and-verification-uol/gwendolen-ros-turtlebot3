@@ -56,8 +56,8 @@ public class RosEnv extends DefaultEnvironment{
 	 */
 	public Unifier executeAction(String agName, Action act) throws AILexception {
 		String actionname = act.getFunctor();
-		if (actionname.equals("helloros")) {
-			helloros();
+		if (actionname.equals("hello_ros")) {
+			hello_ros();
 		} else if (actionname.equals("move")) {
 			NumberTerm lx = (NumberTerm) act.getTerm(0);
 			NumberTerm ly = (NumberTerm) act.getTerm(1);
@@ -66,21 +66,21 @@ public class RosEnv extends DefaultEnvironment{
 			NumberTerm ay = (NumberTerm) act.getTerm(4);
 			NumberTerm az = (NumberTerm) act.getTerm(5);
 			move(lx.solve(),ly.solve(),lz.solve(),ax.solve(),ay.solve(),az.solve());
-		} else if (actionname.equals("keepmoving")) {
-		NumberTerm period = (NumberTerm) act.getTerm(0);
-		NumberTerm lx = (NumberTerm) act.getTerm(1);
-		NumberTerm ly = (NumberTerm) act.getTerm(2);
-		NumberTerm lz = (NumberTerm) act.getTerm(3);
-		NumberTerm ax = (NumberTerm) act.getTerm(4);
-		NumberTerm ay = (NumberTerm) act.getTerm(5);
-		NumberTerm az = (NumberTerm) act.getTerm(6);
-		keepmoving((int) period.solve(),lx.solve(),ly.solve(),lz.solve(),ax.solve(),ay.solve(),az.solve());
-	}
+		} else if (actionname.equals("keep_moving")) {
+			NumberTerm period = (NumberTerm) act.getTerm(0);
+			NumberTerm lx = (NumberTerm) act.getTerm(1);
+			NumberTerm ly = (NumberTerm) act.getTerm(2);
+			NumberTerm lz = (NumberTerm) act.getTerm(3);
+			NumberTerm ax = (NumberTerm) act.getTerm(4);
+			NumberTerm ay = (NumberTerm) act.getTerm(5);
+			NumberTerm az = (NumberTerm) act.getTerm(6);
+			keep_moving((int) period.solve(),lx.solve(),ly.solve(),lz.solve(),ax.solve(),ay.solve(),az.solve());
+		}
 		
 		return super.executeAction(agName, act);
 	}
 	
-	public void helloros() {
+	public void hello_ros() {
 		Publisher pub = new Publisher("/java_to_ros", "std_msgs/String", bridge);
 		
 		for(int i = 0; i < 100; i++) {
@@ -101,7 +101,7 @@ public class RosEnv extends DefaultEnvironment{
 		cmd_vel.publish(new Twist(linear, angular));
 	}
 	
-	public void keepmoving(int period, double lx, double ly, double lz, double ax, double ay, double az) {
+	public void keep_moving(int period, double lx, double ly, double lz, double ax, double ay, double az) {
 		PeriodicPublisher cmd_vel = new PeriodicPublisher("/cmd_vel", "geometry_msgs/Twist", bridge);
 		
 		Vector3 linear = new Vector3(lx,ly,lz);
