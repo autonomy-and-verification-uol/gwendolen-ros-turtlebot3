@@ -1,0 +1,25 @@
+GWENDOLEN
+
+:name: turtlebot3
+
+:Initial Beliefs:
+waypoint(a)
+waypoint(b)
+waypoint(c)
+waypoint(d)
+
+waypoint_coordinate(a,1.25,0.0,0.0)
+waypoint_coordinate(b,2.5,0.0,0.0)
+waypoint_coordinate(c,2.5,1.0,0.0)
+waypoint_coordinate(d,1.25,1.0,0.0)
+
+:Reasoning Rules:
+
+:Initial Goals:
+
+patrol(a,b,c,d) [perform]
+
+:Plans:
+
++!patrol(A,B,C,D) [perform] : {B waypoint_coordinate(A,Ax,Ay,Az), B waypoint_coordinate(B,Bx,By,Bz), B waypoint_coordinate(C,Cx,Cy,Cz), B waypoint_coordinate(D,Dx,Dy,Dz)} 
+<-  move(Ax,Ay,Az), move(Bx,By,Bz), move(Cx,Cy,Cz), move(Dx,Dy,Dz), +!patrol(a,b,c,d) [perform];

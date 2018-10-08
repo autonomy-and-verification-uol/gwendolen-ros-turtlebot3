@@ -1,0 +1,111 @@
+<launch>
+  <arg name="port" default="9090" />
+  <arg name="address" default="" />
+  <arg name="ssl" default="false" />
+  <arg name="certfile" default=""/>
+  <arg name="keyfile" default="" />
+
+  <arg name="retry_startup_delay" default="5" />
+
+  <arg name="fragment_timeout" default="600" />
+  <arg name="delay_between_messages" default="0" />
+  <arg name="max_message_size" default="None" />
+  <arg name="unregister_timeout" default="10" />
+
+  <arg name="authenticate" default="false" />
+
+  <arg name="topics_glob" default="[*]" />
+  <arg name="services_glob" default="[*]" />
+  <arg name="params_glob" default="[*]" />
+  <arg name="bson_only_mode" default="false" />
+
+  <!-- Valid options for binary_encoder are "default", "b64" and "bson". -->
+  <arg unless="$(arg bson_only_mode)" name="binary_encoder" default="default"/>
+
+  <group if="$(arg ssl)">
+    <node name="rosbridge_websocket" pkg="rosbridge_server" type="rosbridge_websocket" output="screen">
+      <param name="certfile" value="$(arg certfile)" />
+      <param name="keyfile" value="$(arg keyfile)" />
+      <param name="authenticate" value="$(arg authenticate)" />
+      <param name="port" value="$(arg port)"/>
+      <param name="address" value="$(arg address)"/>
+      <param name="retry_startup_delay" value="$(arg retry_startup_delay)"/>
+      <param name="fragment_timeout" value="$(arg fragment_timeout)"/>
+      <param name="delay_between_messages" value="$(arg delay_between_messages)"/>
+      <param name="max_message_size" value="$(arg max_message_size)"/>
+      <param name="unregister_timeout" value="$(arg unregister_timeout)"/>
+
+      <param name="topics_glob" value="$(arg topics_glob)"/>
+      <param name="services_glob" value="$(arg services_glob)"/>
+      <param name="params_glob" value="$(arg params_glob)"/>
+    </node>
+  </group>
+  <group unless="$(arg ssl)">
+    <node name="rosbridge_websocket" pkg="rosbridge_server" type="rosbridge_websocket" output="screen">
+      <param name="authenticate" value="$(arg authenticate)" />
+      <param name="port" value="$(arg port)"/>
+      <param name="address" value="$(arg address)"/>
+      <param name="retry_startup_delay" value="$(arg retry_startup_delay)"/>
+      <param name="fragment_timeout" value="$(arg fragment_timeout)"/>
+      <param name="delay_between_messages" value="$(arg delay_between_messages)"/>
+      <param name="max_message_size" value="$(arg max_message_size)"/>
+      <param name="unregister_timeout" value="$(arg unregister_timeout)"/>
+
+      <param name="topics_glob" value="$(arg topics_glob)"/>
+      <param name="services_glob" value="$(arg services_glob)"/>
+      <param name="params_glob" value="$(arg params_glob)"/>
+
+      <param name="bson_only_mode" value="$(arg bson_only_mode)"/>
+    </node>
+  </group>
+
+  <node name="rosapi" pkg="rosapi" type="rosapi_node">
+    <param name="topics_glob" value="$(arg topics_glob)"/>
+    <param name="services_glob" value="$(arg services_glob)"/>
+    <param name="params_glob" value="$(arg params_glob)"/>
+  </node>
+
+  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+  <arg name="x_pos" default="-2.0"/>
+  <arg name="y_pos" default="-0.5"/>
+  <arg name="z_pos" default="0.0"/>
+
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find turtlebot3_gazebo)/worlds/turtlebot3_world.world"/>
+    <arg name="paused" value="false"/>
+    <arg name="use_sim_time" value="true"/>
+    <arg name="gui" value="true"/>
+    <arg name="headless" value="false"/>
+    <arg name="debug" value="false"/>
+  </include>
+
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(find turtlebot3_description)/urdf/turtlebot3_$(arg model).urdf.xacro" />
+
+  <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"  args="-urdf -model turtlebot3_$(arg model) -x $(arg x_pos) -y $(arg y_pos) -z $(arg z_pos) -param robot_description" />
+  
+  <!-- Arguments -->
+  <arg name="map_file" default="$(find turtlebot3_navigation)/maps/map.yaml"/>
+  <arg name="open_rviz" default="true"/>
+
+  <!-- Turtlebot3 -->
+  <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
+    <arg name="model" value="$(arg model)" />
+  </include>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+  <!-- AMCL -->
+  <include file="$(find turtlebot3_navigation)/launch/amcl.launch"/>
+
+  <!-- move_base -->
+  <include file="$(find turtlebot3_navigation)/launch/move_base.launch">
+    <arg name="model" value="$(arg model)" />
+  </include>
+
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find turtlebot3_navigation)/rviz/turtlebot3_navigation.rviz"/>
+  </group>
+</launch>

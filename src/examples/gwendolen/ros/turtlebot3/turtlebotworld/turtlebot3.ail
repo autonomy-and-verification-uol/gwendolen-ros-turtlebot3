@@ -1,0 +1,6 @@
+mas.file = /src/examples/gwendolen/ros/turtlebot3/turtlebotworld/turtlebot3.gwen
+mas.builder = gwendolen.GwendolenMASBuilder
+
+env = gwendolen.ros.turtlebot3.turtlebotworld.RosEnv
+
+log.warning = ail.mas.DefaultEnvironment
