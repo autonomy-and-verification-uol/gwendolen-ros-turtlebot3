@@ -1,0 +1,33 @@
+GWENDOLEN
+
+:name: turtlebot3
+
+:Initial Beliefs:
+waypoint(a)
+waypoint(b)
+waypoint(c)
+waypoint(d)
+
+waypoint_coordinate(a,1.25,0.0,0.0)
+waypoint_coordinate(b,2.5,0.0,0.0)
+waypoint_coordinate(c,2.5,1.0,0.0)
+waypoint_coordinate(d,1.25,1.0,0.0)
+
+:Reasoning Rules:
+
+:Initial Goals:
+
+patrol(a) [perform]
+
+:Plans:
+
++!patrol(Waypoint) [perform] : { B waypoint_coordinate(Waypoint,X,Y,Z) } 
+<- +going(Waypoint), move(X,Y,Z);
+
++movebase_result(Seq,3) : { B going(a) } <- -going(a), print("Movement to waypoint a ended with success."), +!patrol(b) [perform];
++movebase_result(Seq,3) : { B going(b) } <- -going(b), print("Movement to waypoint b ended with success."), +!patrol(c) [perform];
++movebase_result(Seq,3) : { B going(c) } <- -going(c), print("Movement to waypoint c ended with success."), +!patrol(d) [perform];
++movebase_result(Seq,3) : { B going(d) } <- -going(d), print("Movement to waypoint d ended with success."), +!patrol(a) [perform];
++movebase_result(Seq,2) : { B going(Waypoint) } <- print("Movement to waypoint ",Waypoint," ended with failure.");
+
+//-movebase_result(Seq,3),

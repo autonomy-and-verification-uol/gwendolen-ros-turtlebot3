@@ -56,6 +56,7 @@ public class RosEnv extends DefaultEnvironment{
 					Literal movebase_result = new Literal("movebase_result");
 					movebase_result.addTerm(new NumberTermImpl(msg.header.seq));
 					movebase_result.addTerm(new NumberTermImpl(msg.status.status));
+					System.out.println(movebase_result);
 					addPercept(movebase_result);
 //					System.out.println(scheduler.getActiveJobberNames());
 //					scheduler.resumeScheduling("turtlebot3");
