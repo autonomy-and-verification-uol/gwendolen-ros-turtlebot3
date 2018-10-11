@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import ail.mas.DefaultEnvironment;
 import ail.syntax.Action;
+import ail.syntax.Literal;
 import ail.syntax.NumberTerm;
+import ail.syntax.NumberTermImpl;
 import ail.syntax.Unifier;
 import ail.util.AILexception;
 import ros.Publisher;
@@ -13,7 +15,7 @@ import ros.RosListenDelegate;
 import ros.SubscriptionRequestMsg;
 import ros.msgs.geometry_msgs.Twist;
 import ros.msgs.geometry_msgs.Vector3;
-import ros.msgs.geometry_msgs.PoseStamped;
+import ros.msgs.move_base_msgs.MoveBaseActionResult;
 import ros.msgs.std_msgs.PrimitiveMsg;
 import ros.tools.MessageUnpacker;
 import ros.tools.PeriodicPublisher;
@@ -34,21 +36,42 @@ public class RosEnv extends DefaultEnvironment{
 		bridge.connect("ws://localhost:9090", true);
 		System.out.println("Environment started, connection with ROS established.");
 		
-		bridge.subscribe(SubscriptionRequestMsg.generate("/ros_to_java")
-				.setType("std_msgs/String")
-				.setThrottleRate(1)
-				.setQueueLength(1),
+		bridge.subscribe(SubscriptionRequestMsg.generate("/move_base/result")
+				.setType("move_base_msgs/MoveBaseActionResult"),
+//				.setThrottleRate(1)
+//				.setQueueLength(1),
 			new RosListenDelegate() {
-
 				public void receive(JsonNode data, String stringRep) {
-					MessageUnpacker<PrimitiveMsg<String>> unpacker = new MessageUnpacker<PrimitiveMsg<String>>(PrimitiveMsg.class);
-					PrimitiveMsg<String> msg = unpacker.unpackRosMessage(data);
-					System.out.println(msg.data);
+					MessageUnpacker<MoveBaseActionResult> unpacker = new MessageUnpacker<MoveBaseActionResult>(MoveBaseActionResult.class);
+					MoveBaseActionResult msg = unpacker.unpackRosMessage(data);
+					System.out.println("Frame id: "+msg.header.frame_id);
+					System.out.println("Stamp sec: "+msg.header.stamp.secs);
+					System.out.println("Seq: "+msg.header.seq);
+					System.out.println("Goal: "+msg.status.goal_id.id);
+					System.out.println("Stamp sec: "+msg.status.goal_id.stamp.secs);
+					System.out.println("Status: "+msg.status.status);
+					System.out.println("Text: "+msg.status.text);
+					
+					System.out.println();
+					Literal movebase_result = new Literal("movebase_result");
+					movebase_result.addTerm(new NumberTermImpl(msg.header.seq));
+					movebase_result.addTerm(new NumberTermImpl(msg.status.status));
+					addPercept(movebase_result);
+//					System.out.println(scheduler.getActiveJobberNames());
+//					scheduler.resumeScheduling("turtlebot3");
+//					scheduler.isActive("turtlebot3");
+//					try {
+//					Thread.sleep(500);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					System.out.println(scheduler.getActiveJobberNames());
+//					addPercept(new Literal("test"));
 				}
 			}
-	);
-
-	
+	    );
+		
 	}
 	
 	/*
@@ -118,8 +141,16 @@ public class RosEnv extends DefaultEnvironment{
 	}
 	
 	public void move(double lx, double ly, double lz) {
+//		sub_move_base_result();
+//		System.out.println(scheduler.getActiveJobberNames());
 		Publisher move_base = new Publisher("/gwendolen_to_move_base", "geometry_msgs/Vector3", bridge);
 		move_base.publish(new Vector3(lx,ly,lz));
+		try {
+			Thread.sleep(15000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void keep_moving(int period, double lx, double ly, double lz, double ax, double ay, double az) {
@@ -137,5 +168,48 @@ public class RosEnv extends DefaultEnvironment{
 		Vector3 angular = new Vector3(0.0,0.0,0.0);
 		cmd_vel.publish(new Twist(linear, angular));
 	}
+	
+	public void sub_move_base_result() {
+		bridge.subscribe(SubscriptionRequestMsg.generate("/move_base/result")
+				.setType("move_base_msgs/MoveBaseActionResult"),
+//				.setThrottleRate(1)
+//				.setQueueLength(1),
+			new RosListenDelegate() {
+				public void receive(JsonNode data, String stringRep) {
+					MessageUnpacker<MoveBaseActionResult> unpacker = new MessageUnpacker<MoveBaseActionResult>(MoveBaseActionResult.class);
+					MoveBaseActionResult msg = unpacker.unpackRosMessage(data);
+					System.out.println("Frame id: "+msg.header.frame_id);
+					System.out.println("Stamp sec: "+msg.header.stamp.secs);
+					System.out.println("Seq: "+msg.header.seq);
+					System.out.println("Goal: "+msg.status.goal_id.id);
+					System.out.println("Stamp sec: "+msg.status.goal_id.stamp.secs);
+					System.out.println("Status: "+msg.status.status);
+					System.out.println("Text: "+msg.status.text);
+					
+					System.out.println();
+//					NumberTerm result = new NumberTermImpl(msg.status.status);
+//					Literal movebase_result = new Literal("movebase_result");
+//					movebase_result.addTerm(r);
+//					addPercept(movebase_result);
+//					System.out.println(scheduler.getActiveJobberNames());
+//					scheduler.resumeScheduling("turtlebot3");
+//					scheduler.isActive("turtlebot3");
+//					try {
+//					Thread.sleep(500);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					System.out.println(scheduler.getActiveJobberNames());
+
+						addPercept(new Literal("test"));
+
+					
+				}
+			}
+	    );
+	}
 
 }
+
+	

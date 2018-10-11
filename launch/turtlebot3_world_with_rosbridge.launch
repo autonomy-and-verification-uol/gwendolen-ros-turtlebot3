@@ -108,4 +108,7 @@
     <node pkg="rviz" type="rviz" name="rviz" required="true"
           args="-d $(find turtlebot3_navigation)/rviz/turtlebot3_navigation.rviz"/>
   </group>
+  
+  <!-- python gwendolen movebase scripts -->
+  <node name="movebase_client_py" output="screen" pkg="simple_navigation_goals" type="simple_navigation_goals.py" />
 </launch>

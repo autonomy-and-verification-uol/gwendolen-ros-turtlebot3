@@ -3,4 +3,5 @@ mas.builder = gwendolen.GwendolenMASBuilder
 
 env = gwendolen.ros.turtlebot3.turtlebotworld.RosEnv
 
-log.warning = ail.mas.DefaultEnvironment
+log.info = ail.mas.DefaultEnvironment
+log.fine = ail.semantics.operationalrules

@@ -17,9 +17,15 @@ waypoint_coordinate(d,1.25,1.0,0.0)
 
 :Initial Goals:
 
-patrol(a,b,c,d) [perform]
+patrol(a) [perform]
 
 :Plans:
 
-+!patrol(A,B,C,D) [perform] : {B waypoint_coordinate(A,Ax,Ay,Az), B waypoint_coordinate(B,Bx,By,Bz), B waypoint_coordinate(C,Cx,Cy,Cz), B waypoint_coordinate(D,Dx,Dy,Dz)} 
-<-  move(Ax,Ay,Az), move(Bx,By,Bz), move(Cx,Cy,Cz), move(Dx,Dy,Dz), +!patrol(a,b,c,d) [perform];
++!patrol(Waypoint) [perform] : { B waypoint_coordinate(Waypoint,X,Y,Z) } 
+<- move(X,Y,Z);
+
++movebase_result(0,3) : {True} <- print("Movement for goal ",Goal," ended with success."), +!patrol(b) [perform];
++movebase_result(1,3) : {True} <- print("Movement for goal ",Goal," ended with success."), +!patrol(c) [perform];
++movebase_result(2,3) : {True} <- print("Movement for goal ",Goal," ended with success."), +!patrol(d) [perform];
++movebase_result(3,3) : {True} <- print("Movement for goal ",Goal," ended with success, patrol completed.");
++movebase_result(Goal,2) : {True} <- print("Movement for goal ",Goal," ended with failure.");
