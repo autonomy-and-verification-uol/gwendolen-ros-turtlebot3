@@ -24,8 +24,8 @@ patrol(a) [perform]
 +!patrol(Waypoint) [perform] : { B waypoint_coordinate(Waypoint,X,Y,Z) } 
 <- move(X,Y,Z);
 
-+movebase_result(0,3) : {True} <- print("Movement for goal ",Goal," ended with success."), +!patrol(b) [perform];
-+movebase_result(1,3) : {True} <- print("Movement for goal ",Goal," ended with success."), +!patrol(c) [perform];
-+movebase_result(2,3) : {True} <- print("Movement for goal ",Goal," ended with success."), +!patrol(d) [perform];
-+movebase_result(3,3) : {True} <- print("Movement for goal ",Goal," ended with success, patrol completed.");
++movebase_result(0,3) : {True} <- print("Movement for goal 0 ended with success."), +!patrol(b) [perform];
++movebase_result(1,3) : {True} <- print("Movement for goal 1 ended with success."), +!patrol(c) [perform];
++movebase_result(2,3) : {True} <- print("Movement for goal 2 ended with success."), +!patrol(d) [perform];
++movebase_result(3,3) : {True} <- print("Movement for goal 3 ended with success patrol completed.");
 +movebase_result(Goal,2) : {True} <- print("Movement for goal ",Goal," ended with failure.");

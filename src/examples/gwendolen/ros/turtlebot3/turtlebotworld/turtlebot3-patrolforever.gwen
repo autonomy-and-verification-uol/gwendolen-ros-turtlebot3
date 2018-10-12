@@ -29,5 +29,3 @@ patrol(a) [perform]
 +movebase_result(Seq,3) : { B going(c) } <- -going(c), print("Movement to waypoint c ended with success."), +!patrol(d) [perform];
 +movebase_result(Seq,3) : { B going(d) } <- -going(d), print("Movement to waypoint d ended with success."), +!patrol(a) [perform];
 +movebase_result(Seq,2) : { B going(Waypoint) } <- print("Movement to waypoint ",Waypoint," ended with failure.");
-
-//-movebase_result(Seq,3),
