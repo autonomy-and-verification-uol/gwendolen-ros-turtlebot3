@@ -1,0 +1,338 @@
+GWENDOLEN
+
+:name: tb3_0
+
+:Initial Beliefs:
+waypoint(kitchen, a)
+waypoint(kitchen, b)
+waypoint(kitchen, c)
+waypoint(bedroom, a)
+waypoint(bedroom, b)
+waypoint(bedroom, c)
+waypoint(bathroom, a)
+waypoint(bathroom, b)
+waypoint(bathroom, c)
+waypoint(diningroom, a)
+waypoint(diningroom, b)
+waypoint(diningroom, c)
+
+waypoint_coordinate(kitchen,a,1.25,0.0,0.0)
+waypoint_coordinate(kitchen,b,1.5,0.0,0.0)
+waypoint_coordinate(kitchen,c,1.75,0.0,0.0)
+waypoint_coordinate(bedroom,a,2.5,0.0,0.0)
+waypoint_coordinate(bedroom,b,2.0,0.0,0.0)
+waypoint_coordinate(bedroom,c,2.75,0.0,0.0)
+waypoint_coordinate(bathroom,a,2.5,1.0,0.0)
+waypoint_coordinate(bathroom,b,2.0,1.0,0.0)
+waypoint_coordinate(bathroom,c,2.75,1.0,0.0)
+waypoint_coordinate(diningroom,a,1.25,1.0,0.0)
+waypoint_coordinate(diningroom,b,1.5,1.0,0.0)
+waypoint_coordinate(diningroom,c,1.75,1.0,0.0)
+
+item(i1)
+item(i2)
+item(i3)
+item(i4)
+
+delivery(i1, kitchen, a)
+delivery(i2, bedroom, a)
+delivery(i3, bathroom, b)
+delivery(i4, diningroom, c)
+
+name(tb3_0)
+
+:Reasoning Rules:
+
+:Initial Goals:
+
+deliver [perform]
+
+:Plans:
+
++!deliver [perform] : { B name(Name), B failure(Room, Waypoint) }
+<- 
+	+!ask_for_help(Name, Room, Waypoint) [perform];
++!deliver [perform] : { B name(Name), B help_request(Ag, Room, Waypoint), B waypoint_coordinate(Room, Waypoint, X, Y, Z) }
+<-
+	.send(Ag, :tell, accept_request_for_help);
+	print("Agent ", Name, " is going to rescue agent ", Ag, " in room ", Room, " at waypoint ", Waypoint);
+	move(Name, X, Y, Z);
+	-help_request(Ag, Room, Waypoint);
+	print("Agent ", Name, "is getting all the items from agent ", Ag);
+	.send(Ag, :tell, get_items(Name));
++!deliver [perform] : { B name(Name), B delivery(Item, Room, Waypoint), B item(Item), B waypoint_coordinate(Room, Waypoint, X, Y, Z) }
+<- 
+	print("Agent ", Name, " starts delivering item ", Item, " to room ", Room, " at waypoint ", Waypoint);
+	move(Name, X, Y, Z);
+	print("Agent ", Name, " reached room ", Room, "'s waypoint ", Waypoint);
+	-delivery(Item, _);
+	print("Agent ", Name, " has delivered item ", Item);
+	random_fail(Room, Waypoint);
+	+!deliver [perform];
++!deliver [perform] : { B delivery(Item, Room, Waypoint),  ~ B item(Item) }
+<- 
+	print("Agent ", Name, " cannot deliver item ", Item);
+	print("Delivery request propagated to other agents");
+	-delivery(Item, Room, Waypoint);
+	.send(tb3_1, :tell, delivery(Item, Room, Waypoint));
+	.send(tb3_2, :tell, delivery(Item, Room, Waypoint));
++!deliver [perform] : { True }
+<- 
+	print("Nothing to deliver, I am turning myself off");
+
++.received(:tell, B): {True} <- +B;  
+
++get_items(Ag) : { B failure(_, _), B item(Item), B delivery(Item, Room, Waypoint) } 
+<- 
+	.send(Ag, :tell, item(Item));
+	.send(Ag, :tell, delivery(Item, Room, Waypoint));
+	-item(Item);
+	-delivery(Item, Room, Waypoint);
+	+!get_items(Ag);
++!get_items(Ag) : { True } 
+<- 
+	.send(Ag, :tell, all_items_given);
+	print("All the items have been passed to agent ", Ag);
+	
++all_items_given : { True } <- +!deliver [perform];
+
++!ask_for_help(Name, Room, Waypoint) : { True }
+<-
+	.send(tb3_1, :tell, help_request(Name, Room, Waypoint));
+	wait(5000);
+	+!ask_for_help1(Name, Room, Waypoint);
++!ask_for_help1(Name, Room, Waypoint) : { ~ B accept_request_for_help }
+<-
+	.send(tb3_2, :tell, help_request(Name, Room, Waypoint));
++!ask_for_help(Name, Room, Waypoint) : { True }
+<-
+	-accept_request_for_help;
+	print("Someone has already accepted to help me, no need to send other requests");
+
+
+GWENDOLEN
+
+
+:name: tb3_1
+
+:Initial Beliefs:
+waypoint(kitchen, a)
+waypoint(kitchen, b)
+waypoint(kitchen, c)
+waypoint(bedroom, a)
+waypoint(bedroom, b)
+waypoint(bedroom, c)
+waypoint(bathroom, a)
+waypoint(bathroom, b)
+waypoint(bathroom, c)
+waypoint(diningroom, a)
+waypoint(diningroom, b)
+waypoint(diningroom, c)
+
+waypoint_coordinate(kitchen,a,1.25,0.0,0.0)
+waypoint_coordinate(kitchen,b,1.5,0.0,0.0)
+waypoint_coordinate(kitchen,c,1.75,0.0,0.0)
+waypoint_coordinate(bedroom,a,2.5,0.0,0.0)
+waypoint_coordinate(bedroom,b,2.0,0.0,0.0)
+waypoint_coordinate(bedroom,c,2.75,0.0,0.0)
+waypoint_coordinate(bathroom,a,2.5,1.0,0.0)
+waypoint_coordinate(bathroom,b,2.0,1.0,0.0)
+waypoint_coordinate(bathroom,c,2.75,1.0,0.0)
+waypoint_coordinate(diningroom,a,1.25,1.0,0.0)
+waypoint_coordinate(diningroom,b,1.5,1.0,0.0)
+waypoint_coordinate(diningroom,c,1.75,1.0,0.0)
+
+item(i5)
+item(i6)
+item(i7)
+item(i8)
+
+delivery(i5, bedroom, a)
+delivery(i6, bathroom, a)
+delivery(i7, bathroom, b)
+delivery(i8, kitchen, c)
+
+name(tb3_1)
+
+:Reasoning Rules:
+
+:Initial Goals:
+
+deliver [perform]
+
+:Plans:
+
++!deliver [perform] : { B name(Name), B failure(Room, Waypoint) }
+<- 
+	+!ask_for_help(Name, Room, Waypoint);
++!deliver [perform] : { B name(Name), B help_request(Ag, Room, Waypoint), B waypoint_coordinate(Room, Waypoint, X, Y, Z) }
+<-
+	.send(Ag, :tell, accept_request_for_help);
+	print("Agent ", Name, " is going to rescue agent ", Ag, " in room ", Room, " at waypoint ", Waypoint);
+	move(Name, X, Y, Z);
+	-help_request(Ag, Room, Waypoint);
+	print("Agent ", Name, "is getting all the items from agent ", Ag);
+	.send(Ag, :tell, get_items(Name));
++!deliver [perform] : { B name(Name), B delivery(Item, Room, Waypoint), B item(Item), B waypoint_coordinate(Room, Waypoint, X, Y, Z) }
+<- 
+	print("Agent ", Name, " starts delivering item ", Item, " to room ", Room, " at waypoint ", Waypoint);
+	move(Name, X, Y, Z);
+	print("Agent ", Name, " reached room ", Room, "'s waypoint ", Waypoint);
+	-delivery(Item, _);
+	print("Agent ", Name, " has delivered item ", Item);
+	random_fail(Room, Waypoint);
+	+!deliver [perform];
++!deliver [perform] : { B delivery(Item, Room, Waypoint),  ~ B item(Item) }
+<- 
+	print("Agent ", Name, " cannot deliver item ", Item);
+	print("Delivery request propagated to other agents");
+	-delivery(Item, Room, Waypoint);
+	.send(tb3_0, :tell, delivery(Item, Room, Waypoint));
+	.send(tb3_2, :tell, delivery(Item, Room, Waypoint));
++!deliver [perform] : { True }
+<- 
+	print("Nothing to deliver, I am turning myself off");
+
++.received(:tell, B): {True} <- +B;  
+
++get_items(Ag) : { B failure(_, _), B item(Item), B delivery(Item, Room, Waypoint) } 
+<- 
+	.send(Ag, :tell, item(Item));
+	.send(Ag, :tell, delivery(Item, Room, Waypoint));
+	-item(Item);
+	-delivery(Item, Room, Waypoint);
+	+!get_items(Ag);
++!get_items(Ag) : { True } 
+<- 
+	.send(Ag, :tell, all_items_given);
+	print("All the items have been passed to agent ", Ag);
+	
++all_items_given : { True } <- +!deliver [perform];
+
++!ask_for_help(Name, Room, Waypoint) : { True }
+<-
+	.send(tb3_0, :tell, help_request(Name, Room, Waypoint));
+	wait(5000);
+	+!ask_for_help1(Name, Room, Waypoint);
++!ask_for_help1(Name, Room, Waypoint) : { ~ B accept_request_for_help }
+<-
+	.send(tb3_2, :tell, help_request(Name, Room, Waypoint));
++!ask_for_help(Name, Room, Waypoint) : { True }
+<-
+	-accept_request_for_help;
+	print("Someone has already accepted to help me, no need to send other requests");
+
+
+
+GWENDOLEN
+
+:name: tb3_2
+
+:Initial Beliefs:
+waypoint(kitchen, a)
+waypoint(kitchen, b)
+waypoint(kitchen, c)
+waypoint(bedroom, a)
+waypoint(bedroom, b)
+waypoint(bedroom, c)
+waypoint(bathroom, a)
+waypoint(bathroom, b)
+waypoint(bathroom, c)
+waypoint(diningroom, a)
+waypoint(diningroom, b)
+waypoint(diningroom, c)
+
+waypoint_coordinate(kitchen,a,1.25,0.0,0.0)
+waypoint_coordinate(kitchen,b,1.5,0.0,0.0)
+waypoint_coordinate(kitchen,c,1.75,0.0,0.0)
+waypoint_coordinate(bedroom,a,2.5,0.0,0.0)
+waypoint_coordinate(bedroom,b,2.0,0.0,0.0)
+waypoint_coordinate(bedroom,c,2.75,0.0,0.0)
+waypoint_coordinate(bathroom,a,2.5,1.0,0.0)
+waypoint_coordinate(bathroom,b,2.0,1.0,0.0)
+waypoint_coordinate(bathroom,c,2.75,1.0,0.0)
+waypoint_coordinate(diningroom,a,1.25,1.0,0.0)
+waypoint_coordinate(diningroom,b,1.5,1.0,0.0)
+waypoint_coordinate(diningroom,c,1.75,1.0,0.0)
+
+item(i9)
+item(i10)
+item(i11)
+item(i12)
+
+delivery(i9, bedroom, a)
+delivery(i10, bathroom, a)
+delivery(i11, bathroom, b)
+delivery(i12, kitchen, c)
+
+name(tb3_2)
+
+:Reasoning Rules:
+
+:Initial Goals:
+
+deliver [perform]
+
+:Plans:
+
++!deliver [perform] : { B name(Name), B failure(Room, Waypoint) }
+<- 
+	+!ask_for_help(Name, Room, Waypoint);
++!deliver [perform] : { B name(Name), B help_request(Ag, Room, Waypoint), B waypoint_coordinate(Room, Waypoint, X, Y, Z) }
+<-
+	.send(Ag, :tell, accept_request_for_help);
+	print("Agent ", Name, " is going to rescue agent ", Ag, " in room ", Room, " at waypoint ", Waypoint);
+	move(Name, X, Y, Z);
+	-help_request(Ag, Room, Waypoint);
+	print("Agent ", Name, "is getting all the items from agent ", Ag);
+	.send(Ag, :tell, get_items(Name));
++!deliver [perform] : { B name(Name), B delivery(Item, Room, Waypoint), B item(Item), B waypoint_coordinate(Room, Waypoint, X, Y, Z) }
+<- 
+	print("Agent ", Name, " starts delivering item ", Item, " to room ", Room, " at waypoint ", Waypoint);
+	move(Name, X, Y, Z);
+	print("Agent ", Name, " reached room ", Room, "'s waypoint ", Waypoint);
+	-delivery(Item, _);
+	print("Agent ", Name, " has delivered item ", Item);
+	random_fail(Room, Waypoint);
+	+!deliver [perform];
++!deliver [perform] : { B delivery(Item, Room, Waypoint),  ~ B item(Item) }
+<- 
+	print("Agent ", Name, " cannot deliver item ", Item);
+	print("Delivery request propagated to other agents");
+	-delivery(Item, Room, Waypoint);
+	.send(tb3_0, :tell, delivery(Item, Room, Waypoint));
+	.send(tb3_1, :tell, delivery(Item, Room, Waypoint));
++!deliver [perform] : { True }
+<- 
+	print("Nothing to deliver, I am turning myself off");
+
++.received(:tell, B): {True} <- +B;  
+
++get_items(Ag) : { B failure(_, _), B item(Item), B delivery(Item, Room, Waypoint) } 
+<- 
+	.send(Ag, :tell, item(Item));
+	.send(Ag, :tell, delivery(Item, Room, Waypoint));
+	-item(Item);
+	-delivery(Item, Room, Waypoint);
+	+!get_items(Ag);
++!get_items(Ag) : { True } 
+<- 
+	.send(Ag, :tell, all_items_given);
+	print("All the items have been passed to agent ", Ag);
+	
++all_items_given : { True } <- +!deliver [perform];
+
++!ask_for_help(Name, Room, Waypoint) : { True }
+<-
+	.send(tb3_0, :tell, help_request(Name, Room, Waypoint));
+	wait(5000);
+	+!ask_for_help1(Name, Room, Waypoint);
++!ask_for_help1(Name, Room, Waypoint) : { ~ B accept_request_for_help }
+<-
+	.send(tb3_1, :tell, help_request(Name, Room, Waypoint));
++!ask_for_help(Name, Room, Waypoint) : { True }
+<-
+	-accept_request_for_help;
+	print("Someone has already accepted to help me, no need to send other requests");
+
+
